@@ -3,9 +3,7 @@
 
 name: Publish AMS Wrapper
 
-on:
-  release:
-    types: [created]
+on: [push]
 
 jobs:
   build:
