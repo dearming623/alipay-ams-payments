@@ -31,7 +31,7 @@ jobs:
     #     GITHUB_TOKEN: ${{ github.token }}
 
     - name: Create GitHub Release
-      id: create_release
+      id: create-new-release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ github.token }}
