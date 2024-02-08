@@ -3,7 +3,10 @@
 
 name: Publish AMS Wrapper
 
-on: [push]
+on:
+  push:
+    branches:
+      - 'master'
 
 jobs:
   build:
