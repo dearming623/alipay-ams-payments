@@ -44,3 +44,15 @@ jobs:
           - Second Change
         draft: false
         prerelease: false
+
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        upload_url: ${{ steps.create-new-release.outputs.upload_url}}
+        asset_path: ./target/alipay-ams-payments-1.0.0-SNAPSHOT.jar
+        asset_name: alipay-ams-payments-v${{ github.run_number}}.jar
+        asset_conntent_type: application/jar
+        
+        
