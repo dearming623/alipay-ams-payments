@@ -25,7 +25,22 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
-    - name: Publish to GitHub Packages Apache Maven
-      run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
+    # - name: Publish to GitHub Packages Apache Maven
+    #   run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
+    #   env:
+    #     GITHUB_TOKEN: ${{ github.token }}
+
+    - name: Create Release
+      id: create_release
+      uses: action/create-release@v1
       env:
         GITHUB_TOKEN: ${{ github.token }}
+      with:
+        tag_name: ${{github.ref}}
+        release_name: Release ${{github.ref}}
+        body: |
+          Changes in this Release
+          - First Change
+          - Second Change
+        draft: false
+        prerelease: false
