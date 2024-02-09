@@ -52,11 +52,7 @@ jobs:
         # tag_name: ${{github.run_number}}
         # release_name: Release ${{github.run_number}}
         tag_name: ${{ steps.pom-version.outputs.version }}
-        release_name: ${{ steps.pom-version.outputs.version }}
-        body: |
-            Changes in this Release
-            - First Change
-            - Second Change
+        release_name: ${{ steps.pom-version.outputs.version }} 
         draft: false
         prerelease: false
 
