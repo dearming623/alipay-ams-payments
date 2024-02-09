@@ -55,7 +55,8 @@ jobs:
         release_name: ${{ steps.pom-version.outputs.version }} 
         # body_path: ./README.md  # is ok
         body: |
-          'New Version: ${{ github.event.commits[0].message }}'
+          Changes in this Release
+          - ${{ github.event.head_commit.message }}
         draft: false
         prerelease: false
 
