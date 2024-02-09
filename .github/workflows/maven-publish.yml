@@ -10,6 +10,8 @@ on:
 
 jobs:
   build:
+    env:
+      commitmsg: ${{ github.event.head_commit.message }}
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -38,6 +40,11 @@ jobs:
     - name: Print the version
       run: "echo 'New Version: ${{steps.pom-version.outputs.version}}'" 
 
+    - name: Dump GitHub context
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
+      run: echo "$GITHUB_CONTEXT"
+
     - name: Create GitHub Release
       id: create-new-release
       uses: actions/create-release@v1
@@ -53,7 +60,7 @@ jobs:
         #   - First Change
         #   - Second Change
         body: |
-            ${{ github.event.head_commit.message }}
+            $commitmsg
         draft: false
         prerelease: false
 
