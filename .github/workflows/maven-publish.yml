@@ -29,6 +29,13 @@ jobs:
     #   run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
     #   env:
     #     GITHUB_TOKEN: ${{ github.token }}
+    
+    - name: Get Version 
+      id: get-version
+      uses: ./ 
+      
+    - name: Print the version
+      run: echo "The version we just got is ${{ steps.get-version.outputs.version }}"
 
     - name: Create GitHub Release
       id: create-new-release
@@ -52,7 +59,8 @@ jobs:
       with:
         upload_url: ${{ steps.create-new-release.outputs.upload_url}}
         asset_path: ./target/alipay-ams-payments-1.0.0-SNAPSHOT.jar
-        asset_name: alipay-ams-payments-v${{ github.run_number}}.jar
+        # asset_name: alipay-ams-payments-v${{ github.run_number}}.jar
+        asset_name: alipay-ams-payments-${{ steps.get-version.outputs.version }}.jar 
         asset_content_type: application/java-archive
         
         
