@@ -41,11 +41,7 @@ jobs:
     - name: Dump GitHub context
       env:
         GITHUB_CONTEXT: ${{ toJson(github) }}
-      run: echo "$GITHUB_CONTEXT"
-
-    - name: set the head commit message as env
-      run: |
-        echo '::set-env name=commitmsg::${{ github.event.head_commit.message }}'
+      run: echo "$GITHUB_CONTEXT" 
         
     - name: Create GitHub Release
       id: create-new-release
@@ -57,8 +53,7 @@ jobs:
         # release_name: Release ${{github.run_number}}
         tag_name: ${{ steps.pom-version.outputs.version }}
         release_name: ${{ steps.pom-version.outputs.version }} 
-        body: |
-            ${{ env.commitmsg }}
+        body_path: ./README.md
         draft: false
         prerelease: false
 
