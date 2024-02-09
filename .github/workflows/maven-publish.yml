@@ -9,9 +9,7 @@ on:
       - 'main'
 
 jobs:
-  build:
-    env:
-      commitmsg: ${{ github.event.head_commit.message }}
+  build: 
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -45,6 +43,10 @@ jobs:
         GITHUB_CONTEXT: ${{ toJson(github) }}
       run: echo "$GITHUB_CONTEXT"
 
+    - name: set the head commit message as env
+      run: |
+        echo '::set-env name=commitmsg::${{ github.event.head_commit.message }}'
+        
     - name: Create GitHub Release
       id: create-new-release
       uses: actions/create-release@v1
@@ -56,7 +58,7 @@ jobs:
         tag_name: ${{ steps.pom-version.outputs.version }}
         release_name: ${{ steps.pom-version.outputs.version }} 
         body: |
-            $commitmsg
+            ${{ env.commitmsg }}
         draft: false
         prerelease: false
 
