@@ -54,9 +54,9 @@ jobs:
         tag_name: ${{ steps.pom-version.outputs.version }}
         release_name: ${{ steps.pom-version.outputs.version }} 
         # body_path: ./README.md  # is ok
-        body: |
-          Changes in this Release
-          - ${{ github.event.head_commit.message }}
+        # body: |
+        #   Changes in this Release
+        #   - ${{ github.event.head_commit.message }}
         draft: false
         prerelease: false
 
