@@ -29,21 +29,14 @@ jobs:
     #   env:
     #     GITHUB_TOKEN: ${{ github.token }}
 
-    - name: Bump Version
-      id: bump
+    - name: Get current version from pom.xml file
+      id: pom-version
       uses: nnichols/maven-version-bump-action@v3
       with:
         github-token: ${{ secrets.github_token }}
 
-    - name: Print Version
-      run: "echo 'New Version: ${{steps.bump.outputs.version}}'"
-     
-    - name: Get current version from pom file
-      id: pom-version
-      uses: CptMokoena/maven-get-version-action@1.0.3   
-      
     - name: Print the version
-      run: echo "The version we just got is ${{ steps.pom-version.outputs.version }}"
+      run: "echo 'New Version: ${{steps.pom-version.outputs.version}}'" 
 
     - name: Create GitHub Release
       id: create-new-release
@@ -51,8 +44,10 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ github.token }}
       with:
-        tag_name: ${{github.run_number}}
-        release_name: Release ${{github.run_number}}
+        # tag_name: ${{github.run_number}}
+        # release_name: Release ${{github.run_number}}
+        tag_name: ${{ steps.pom-version.outputs.version }}
+        release_name: ${{ steps.pom-version.outputs.version }}
         body: |
           Changes in this Release
           - First Change
@@ -66,7 +61,7 @@ jobs:
         GITHUB_TOKEN: ${{ github.token }}
       with:
         upload_url: ${{ steps.create-new-release.outputs.upload_url}}
-        asset_path: ./target/alipay-ams-payments-1.0.0-SNAPSHOT.jar
+        asset_path: ./target/alipay-ams-payments-${{ steps.pom-version.outputs.version }}.jar
         # asset_name: alipay-ams-payments-v${{ github.run_number}}.jar
         asset_name: alipay-ams-payments-${{ steps.pom-version.outputs.version }}.jar 
         asset_content_type: application/java-archive
