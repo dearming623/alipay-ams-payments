@@ -31,11 +31,11 @@ jobs:
     #     GITHUB_TOKEN: ${{ github.token }}
     
     - name: Get Version 
-      id: get-version
-      uses: ./pom.xml
+      id: getVersion
+      uses: ./
       
     - name: Print the version
-      run: echo "The version we just got is ${{ steps.get-version.outputs.version }}"
+      run: echo "The version we just got is ${{ steps.getVersion.outputs.version }}"
 
     - name: Create GitHub Release
       id: create-new-release
