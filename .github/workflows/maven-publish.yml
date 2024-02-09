@@ -29,9 +29,9 @@ jobs:
     #   env:
     #     GITHUB_TOKEN: ${{ github.token }}
     
-    - name: get-pom-version
+    - name: Get current version from pom file
       id: pom-version
-      uses: CptMokoena/maven-get-version-action@master
+      uses: CptMokoena/maven-get-version-action@1.0.3  
       
     - name: Print the version
       run: echo "The version we just got is ${{ steps.pom-version.outputs.version }}"
