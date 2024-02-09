@@ -32,7 +32,7 @@ jobs:
     
     - name: Get Version 
       id: get-version
-      uses: ./ 
+      uses: ./pom.xml
       
     - name: Print the version
       run: echo "The version we just got is ${{ steps.get-version.outputs.version }}"
