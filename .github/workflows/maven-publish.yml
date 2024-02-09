@@ -10,6 +10,7 @@ on:
 
 jobs:
   build: 
+    name: Publish Lib
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -42,6 +43,10 @@ jobs:
       env:
         GITHUB_CONTEXT: ${{ toJson(github) }}
       run: echo "$GITHUB_CONTEXT" 
+
+    - name: Print head git commit message
+      id: get_head_commit_message
+      run: echo "::set-output name=headCommitMsg::$(git show -s --format=%s)"
         
     - name: Create GitHub Release
       id: create-new-release
