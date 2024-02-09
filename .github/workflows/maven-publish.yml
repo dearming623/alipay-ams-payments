@@ -13,7 +13,10 @@ jobs:
     name: Publish Lib
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    
+    - name: Check Out GitHub Source
+      uses: actions/checkout@v3
+    
     - name: Set up JDK 8
       uses: actions/setup-java@v3
       with:
