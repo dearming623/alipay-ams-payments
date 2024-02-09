@@ -47,7 +47,19 @@ jobs:
     - name: Print head git commit message
       id: get_head_commit_message 
       run: echo "headCommitMsg=$(git show -s --format=%s)" >> $GITHUB_OUTPUT
-        
+      
+    - name: Print head git commit message2  
+      run: echo "${{ steps.get_head_commit_message.outputs.headCommitMsg}}"
+
+    # Example of setting an output parameter
+    - name: Set color
+      id: color-selector
+      run: echo "SELECTED_COLOR=green" >> "$GITHUB_OUTPUT"
+    - name: Get color
+      env:
+        SELECTED_COLOR: ${{ steps.color-selector.outputs.SELECTED_COLOR }}
+      run: echo "The selected color is $SELECTED_COLOR"
+
     - name: Create GitHub Release
       id: create-new-release
       uses: actions/create-release@v1
