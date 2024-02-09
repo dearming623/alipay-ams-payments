@@ -52,7 +52,8 @@ jobs:
         #   Changes in this Release
         #   - First Change
         #   - Second Change
-        body: ${{ github.event.head_commit.message }}
+        body: |
+            ${{ github.event.head_commit.message }}
         draft: false
         prerelease: false
 
