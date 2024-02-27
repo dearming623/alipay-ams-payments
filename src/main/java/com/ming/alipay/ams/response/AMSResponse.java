@@ -20,14 +20,15 @@ import java.util.Map;
 @Data
 @NoArgsConstructor
 @ToString
-public class AMSResponse   {
+public class AMSResponse {
 
+    //    @Expose(serialize = false)
     @JSONField(serialize = false)
     private Map<String, List<String>> header;
 
     private Result result;
 
-//    private String paymentRequestId;
+    //    private String paymentRequestId;
 //    private String paymentId;
 //    private String cancelTime;
 //

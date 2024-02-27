@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -23,13 +24,17 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Ming
  * @wechat 147877305
  * @date 7/28/2020 6:06 PM
  */
+@Slf4j
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -45,7 +50,7 @@ public class RestExample<T> {
     private String agentToken;
 
 
-    public void post(Class<T> cls, AMSObjectCallback<T> callback){
+    public void post(Class<T> cls, AMSObjectCallback<T> callback) {
         //test
         String sign = SignatureUtil.sign(restfulPath,
                 sdkConfiguration.getClientId(),
@@ -74,7 +79,7 @@ public class RestExample<T> {
         if (amsRequestParam != null)
             this.requestBody = JSON.toJSONString(amsRequestParam);
 
-          HttpUtil.doHttpRequest("POST",url, httpHeader,requestBody, cls,callback);
+        HttpUtil.doHttpRequest("POST", url, httpHeader, requestBody, cls, callback);
     }
 
     public T post(Class<T> clazz) {
@@ -117,20 +122,13 @@ public class RestExample<T> {
         System.out.println();
 
 
-
 //        String response = postRequest(url, httpHeader, requestBody);
 //        return parseObject(response, clazz);
 //        return response;
 
         //Ok
-        String response =  HttpUtil.doPost(url,httpHeader,requestBody);
+        String response = HttpUtil.doPost(url, httpHeader, requestBody);
         return parseObject(response, clazz);
-
-
-
-
-
-
 
 
 //        if (StringUtils.isEmpty(response)) {
@@ -189,12 +187,18 @@ public class RestExample<T> {
             httpUrlConn.setConnectTimeout(10 * 1000);
 
             if (header != null) {
-                header.forEach(httpUrlConn::setRequestProperty);
+//                header.forEach(httpUrlConn::setRequestProperty);
+                for (Map.Entry<String, String> entry : header.entrySet()) {
+                    httpUrlConn.setRequestProperty(entry.getKey(), entry.getValue());
+                }
             }
 
             //打印header内容
             System.out.println("============ Request header ============ ");
-            httpUrlConn.getRequestProperties().forEach((k, v) -> System.out.println(" " + k + " : " + v));
+//            httpUrlConn.getRequestProperties().forEach((k, v) -> System.out.println(" " + k + " : " + v));
+            for (Map.Entry<String, List<String>> entry : httpUrlConn.getRequestProperties().entrySet()) {
+                System.out.println(" " + entry.getKey() + " : " +  entry.getValue().toString());
+            }
             System.out.println();
             System.out.println("============ Request body ============ ");
             System.out.println(JSONObject.parseObject(requestBody).toString(SerializerFeature.PrettyFormat));
@@ -208,7 +212,7 @@ public class RestExample<T> {
 //            httpUrlConn.setRequestProperty("accept", "application/json");// 接收类型json
             //httpUrlConn.setRequestProperty("accept","*/*")//暴力方法设置接受所有类型，防止出现415
 
-            byte[] writebytes = requestBody.getBytes("UTF-8");//字符流转字节流
+            byte[] writebytes = requestBody.getBytes(StandardCharsets.UTF_8);//字符流转字节流
 
             httpUrlConn.setRequestProperty("Content-Length", String.valueOf(writebytes.length));//设置文件长度
             OutputStream outwritestream = httpUrlConn.getOutputStream();//创建输出流对象
@@ -223,7 +227,7 @@ public class RestExample<T> {
             if (statusCode == 200) {
                 InputStream inputStream = httpUrlConn.getInputStream();//获取输入流
                 //字节流转字符流
-                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "utf-8");
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);//读取字符流
                 String str = null;
                 //将读取到的字符流赋值给buffer，readLine为读取一行，当前行为null时，表示已经读完
@@ -243,7 +247,10 @@ public class RestExample<T> {
 
             System.out.println("============ Response header ============ ");
             //打印header内容
-            httpUrlConn.getHeaderFields().forEach((k, v) -> System.out.println(" " + k + " : " + v));
+//            httpUrlConn.getHeaderFields().forEach((k, v) -> System.out.println(" " + k + " : " + v));
+            for (Map.Entry<String, List<String>> entry : httpUrlConn.getHeaderFields().entrySet()) {
+                System.out.println(" " + entry.getKey() + " : " +  entry.getValue().toString());
+            }
             System.out.println();
             System.out.println("============ Response body ============ ");
             System.out.println(JSONObject.parseObject(buffer.toString()).toString(SerializerFeature.PrettyFormat));
@@ -261,8 +268,9 @@ public class RestExample<T> {
             }
 
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            log.error(ex.getMessage());
         }
 
 

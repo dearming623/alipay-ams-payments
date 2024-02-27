@@ -48,6 +48,9 @@ public class SignatureUtil {
             PrivateKey priKey = KeyFactory.getInstance("RSA").generatePrivate(
                     new PKCS8EncodedKeySpec(Base64.decodeBase64(privateKey.getBytes("UTF-8"))));
 
+//            PrivateKey priKey = KeyFactory.getInstance("RSA").generatePrivate(
+//                    new X509EncodedKeySpec(Base64.decodeBase64(privateKey.getBytes("UTF-8"))));
+
             signature.initSign(priKey);
             signature.update(content.getBytes("UTF-8"));
 

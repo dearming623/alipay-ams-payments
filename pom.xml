@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.ming.alipay.payment</groupId>
     <artifactId>alipay-ams-payments</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -31,23 +31,62 @@
                     <skipTests>true</skipTests>
                 </configuration>
             </plugin>
+            <!-- ProGuard混淆插件-->
+            <plugin>
+                <groupId>com.github.wvengen</groupId>
+                <artifactId>proguard-maven-plugin</artifactId>
+                <version>2.5.1</version>
+                <executions>
+                    <execution>
+                        <!-- 混淆时刻，这里是打包的时候混淆-->
+                        <phase>package</phase>
+                        <goals>
+                            <!-- 指定使用插件的混淆功能 -->
+                            <goal>proguard</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!-- 是否将生成的PG文件安装部署-->
+                    <attach>true</attach>
+                    <!-- 是否混淆-->
+                    <obfuscate>true</obfuscate>
+                    <!-- 指定生成文件分类 -->
+                    <attachArtifactClassifier>pg</attachArtifactClassifier>
+                    <proguardInclude>${basedir}/proguard.cfg</proguardInclude>
+                    <libs>
+                        <lib>${java.home}/lib/rt.jar</lib>
+                        <lib>${java.home}/lib/jce.jar</lib>
+                    </libs>
+                    <!-- 对什么东西进行加载，这里仅有classes成功，不可能对配置文件及JSP混淆吧-->
+                    <injar>classes</injar>
+                    <outjar>${project.build.finalName}-pg.jar</outjar>
+                    <!-- 输出目录-->
+                    <outputDirectory>${project.build.directory}</outputDirectory>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <dependencies>
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.72</version>
+            <version>1.2.83</version>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.google.code.gson</groupId>-->
+<!--            <artifactId>gson</artifactId>-->
+<!--            <version>2.8.6</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.10</version>
+            <version>3.12.0</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.12</version>
+            <version>1.18.22</version>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
@@ -62,7 +101,7 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.2.3</version>
+            <version>1.2.9</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>

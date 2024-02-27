@@ -330,7 +330,6 @@ public class HttpUtil {
                                          final AMSObjectCallback<T> callback) {
 
 
-
         executor.execute(new Runnable() {
             @Override
             public void run() {
@@ -368,7 +367,13 @@ public class HttpUtil {
 
                     //打印header内容
                     System.out.println("============ Request header ============ ");
-                    connection.getRequestProperties().forEach((k, v) -> System.out.println(" " + k + " : " + v));
+//                    connection.getRequestProperties().forEach((k, v) -> System.out.println(" " + k + " : " + v));
+                    Map<String, List<String>> requestProperties = connection.getRequestProperties();
+                    for (Map.Entry<String, List<String>> entry :
+                            requestProperties.entrySet()) {
+                        System.out.println(" " + entry.getKey() + " : " + entry.getValue());
+                    }
+
                     System.out.println();
                     System.out.println("============ Request body ============ ");
                     System.out.println(JSONObject.parseObject(json).toString(SerializerFeature.PrettyFormat));
@@ -505,6 +510,9 @@ public class HttpUtil {
 
     private static void postSuccessByte(final Callback callback, final byte[] bytes) {
 
+
+
+
         ByteArrayCallback byteArrayCallback = (ByteArrayCallback) callback;
         byteArrayCallback.onSuccess(bytes);
 
@@ -518,15 +526,18 @@ public class HttpUtil {
 
     private static void postFailed(final Callback callback, final int code, final Exception e) {
 
-        callback.onFaileure(code, e);
+        callback.onFailure(code, e);
 
     }
 
     private static void postHeader(final Callback callback, final Map<String, List<String>> headerFields) {
         HashMap<String, String> map = new HashMap<>();
-
-        headerFields.forEach((k, v) -> map.put(k, v.toString()));
-
+//        headerFields.forEach((k, v) -> map.put(k, v.toString()));  // not support java 1.6
+        //support java 1.6
+        for (Map.Entry<String, List<String>> entry :
+                headerFields.entrySet()) {
+            map.put(entry.getKey(),entry.getValue().toString());
+        }
         callback.onHeader(map);
     }
 

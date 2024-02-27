@@ -10,5 +10,5 @@ import java.util.HashMap;
 public interface Callback {
     void onHeader(HashMap<String, String> headerMap);
 
-    void onFaileure(int code, Exception e);
+    void onFailure(int code, Exception e);
 }

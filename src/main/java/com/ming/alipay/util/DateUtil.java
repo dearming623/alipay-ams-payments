@@ -25,6 +25,7 @@ package com.ming.alipay.util;
 import org.apache.commons.lang3.StringUtils;
 
 import java.text.ParseException;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -80,16 +81,13 @@ public class DateUtil {
             return null;
         }
 
-        SimpleDateFormat ISO8601dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
         Calendar cal = new GregorianCalendar();
         if (timeZone != null) {
             cal.setTimeZone(timeZone);
-            ISO8601dateFormat.setTimeZone(timeZone);
         }
         cal.setTime(date);
         cal.set(Calendar.MILLISECOND, 0);
-//        return DatatypeConverter.printDateTime(cal);
-        return ISO8601dateFormat.format(date);
+        return ISO8601Utils.format(date, false, cal.getTimeZone());
     }
 
     /**
@@ -118,14 +116,12 @@ public class DateUtil {
 
 //        Calendar cal = DatatypeConverter.parseDate(isoDateStr);
 //        return cal.getTime();
-        SimpleDateFormat ISO8601dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
-        Date date = null;
         try {
-            date = ISO8601dateFormat.parse(isoDateStr);
+            return ISO8601Utils.parse(isoDateStr, new ParsePosition(0));
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return date;
+        return null;
     }
 
     public static String getISO8601DateTimeStrNow() {
