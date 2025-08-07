@@ -15,7 +15,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class AMSHeader {
-    private String contentType ; //  "application/json; charset=UTF-8"
+    //  "application/json; charset=UTF-8"
+    private String contentType;
     private String clientId;
     private String agentToken;
     private String signature;

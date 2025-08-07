@@ -22,7 +22,7 @@ import java.util.*;
  * @author Ming
  * @wechat 147877305
  * @date 7/28/2020 5:58 PM
- * @Link https://global.alipay.com/docs/ac/ams_upm/introduction
+ * @Link <a href="https://global.alipay.com/docs/ac/ams_upm/introduction">https://global.alipay.com/docs/ac/ams_upm/introduction</a>
  * Consumer presented Mode Payment
  * 消费者呈现支付方式
  */
@@ -49,7 +49,7 @@ public class ConsumerPresenter {
                                AMSConfiguration configuration,
                                AMSObjectCallback<AMSResponse> callback) {
 //        String agentToken = "i23ZOAZRnDFzozDxyLwfvxg4LIuJNGT8zad6RMuwED0007C1";
-        RestExample.<AMSResponse>builder()
+        RestExample.builder()
                 .sdkConfiguration(configuration)
                 .restfulPath(RestfulPath.API_CONSULT)
                 .requestBody(JSON.toJSONString(requestParamConsult))
@@ -78,7 +78,7 @@ public class ConsumerPresenter {
 
     public static void pay(String agentToken, PayPaymentDTO param, AMSConfiguration configuration, AMSObjectCallback<Payment> callback
     ) {
-        RestExample.<Payment>builder()
+        RestExample.builder()
                 .sdkConfiguration(configuration)
                 .restfulPath(RestfulPath.API_PAY)
                 .agentToken(agentToken)
@@ -96,7 +96,7 @@ public class ConsumerPresenter {
     }
 
     public static void cancel(String agentToken, CancelPaymentDTO param, AMSConfiguration configuration, AMSObjectCallback<CancelPayment> callback) {
-        RestExample.<CancelPayment>builder()
+        RestExample.builder()
                 .sdkConfiguration(configuration)
                 .restfulPath(RestfulPath.API_CANCEL)
                 .requestBody(JSON.toJSONString(param))
@@ -115,7 +115,7 @@ public class ConsumerPresenter {
     }
 
     public static void refund(String agentToken, RefundPaymentDTO param, AMSConfiguration config, AMSObjectCallback<RefundPayment> callback) {
-        RestExample.<RefundPayment>builder()
+        RestExample.builder()
                 .sdkConfiguration(config)
                 .restfulPath(RestfulPath.API_REFUND)
                 .requestBody(JSON.toJSONString(param))
@@ -133,7 +133,7 @@ public class ConsumerPresenter {
     }
 
     public static void inquiry(String agentToken, InquiryPaymentDTO param, AMSConfiguration configuration, AMSObjectCallback<InquiryPayment> callback) {
-        RestExample.<InquiryPayment>builder()
+        RestExample.builder()
                 .sdkConfiguration(configuration)
                 .restfulPath(RestfulPath.API_INQUIRY)
                 .requestBody(JSON.toJSONString(param))

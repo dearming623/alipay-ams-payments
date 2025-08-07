@@ -1,7 +1,9 @@
 package com.ming.alipay.api;
 
-import lombok.*;
-import org.apache.commons.lang3.StringUtils;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author Ming
@@ -20,12 +22,13 @@ public class Signature {
     private String keyVersion = "1";
     private String signature;
 
-    public void parse(String signContent) {
-        algorithm = StringUtils.substringBetween(signContent, "algorithm=", ",");
-        keyVersion = StringUtils.substringBetween(signContent, "keyVersion=", ",");
-        signature = StringUtils.substringBetween(signContent, "signature=");
-    }
+//    public void parse(String signContent) {
+//        algorithm = StringUtils.substringBetween(signContent, "algorithm=", ",");
+//        keyVersion = StringUtils.substringBetween(signContent, "keyVersion=", ",");
+//        signature = StringUtils.substringBetween(signContent, "signature=");
+//    }
 
+    @Override
     public String toString() {
         return String.format("algorithm=%s,keyVersion=%s,signature=%s", algorithm, keyVersion,
                 signature);

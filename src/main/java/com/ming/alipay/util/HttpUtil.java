@@ -7,8 +7,6 @@ import com.ming.alipay.ams.response.AMSObjectCallback;
 import com.ming.alipay.ams.response.ByteArrayCallback;
 import com.ming.alipay.ams.response.Callback;
 import com.ming.alipay.ams.response.StringCallback;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -31,7 +29,7 @@ import java.util.concurrent.Executors;
  * @wechat 147877305
  * @date 8/1/2020 10:50 AM
  */
-@Slf4j
+
 public class HttpUtil {
 
     //线程池
@@ -93,7 +91,7 @@ public class HttpUtil {
             byte[] responseData = IOUtil.readFromStream(ins);
             return new String(responseData, "UTF-8");
         } catch (Exception e) {
-            log.error("http请求发送失败", e);
+            System.out.println(e.getMessage());
         } finally {
             if (httpurlconnection != null) {
                 httpurlconnection.disconnect();
@@ -122,7 +120,7 @@ public class HttpUtil {
             byte[] responseData = IOUtil.readFromStream(ins);
             return new String(responseData, "UTF-8");
         } catch (Exception e) {
-            log.error("http请求发送失败", e);
+            System.out.println(e.getMessage());
         } finally {
             if (httpurlconnection != null) {
                 httpurlconnection.disconnect();
@@ -142,7 +140,7 @@ public class HttpUtil {
     public static String doPost(String requestUrl, String json) {
         URL url = null;
         HttpURLConnection httpurlconnection = null;
-        log.info("requestUrl===" + requestUrl);
+        System.out.println("requestUrl===" + requestUrl);
         try {
             url = new URL(requestUrl);
             // 获取一个HttpURLConnection链接对象
@@ -177,7 +175,7 @@ public class HttpUtil {
             byte[] responseData = IOUtil.readFromStream(ins);
             return new String(responseData, "UTF-8");
         } catch (Exception e) {
-            log.error("http请求发送失败", e);
+            System.out.println(e.getMessage());
         } finally {
             if (httpurlconnection != null) {
                 httpurlconnection.disconnect();
@@ -189,7 +187,7 @@ public class HttpUtil {
     public static String doPost(String requestUrl, Map<String, String> headerMap, String json) {
         URL url = null;
         HttpURLConnection httpurlconnection = null;
-        log.info("requestUrl===" + requestUrl);
+        System.out.println("requestUrl===" + requestUrl);
         try {
             url = new URL(requestUrl);
             // 获取一个HttpURLConnection链接对象
@@ -227,7 +225,7 @@ public class HttpUtil {
             byte[] responseData = IOUtil.readFromStream(ins);
             return new String(responseData, StandardCharsets.UTF_8);
         } catch (Exception e) {
-            log.error("http请求发送失败", e);
+            System.out.println(e.getMessage());
         } finally {
             if (httpurlconnection != null) {
                 httpurlconnection.disconnect();
@@ -433,6 +431,113 @@ public class HttpUtil {
 //        executor.shutdown();
     }
 
+    public static <T> void sendRequestAsync(final String method,
+                                            final String url,
+                                            final Map<String, String> headerMap,
+                                            final String json,
+                                            final Class<T> cls,
+                                            final AMSObjectCallback<T> callback) {
+
+        Thread newThread = new Thread(() -> {
+            HttpURLConnection connection = null;
+            OutputStream outputStream = null;
+            try {
+                URL u = new URL(url);
+                connection = (HttpURLConnection) u.openConnection();
+                // 设置输入可用
+                connection.setDoInput(true);
+                // 设置输出可用
+                connection.setDoOutput(true);
+                // 设置请求方式
+                connection.setRequestMethod(method);
+                // 设置连接超时
+                connection.setConnectTimeout(connectTimeout);
+                // 设置读取超时
+                connection.setReadTimeout(readTimeout);
+                // 设置缓存不可用
+                connection.setUseCaches(false);
+//                    // 开始连接
+//                    connection.connect();
+
+                if (headerMap != null && !headerMap.isEmpty()) {
+                    for
+                    (Entry<String, String> header : headerMap.entrySet()) {
+                        connection.addRequestProperty(header.getKey(),
+                                header.getValue());
+                    }
+                }
+
+                System.out.println();
+                System.out.println("Request URL: " + url);
+                System.out.println();
+
+                //打印header内容
+                System.out.println("============ Request header ============ ");
+//                    connection.getRequestProperties().forEach((k, v) -> System.out.println(" " + k + " : " + v));
+                Map<String, List<String>> requestProperties = connection.getRequestProperties();
+                for (Map.Entry<String, List<String>> entry :
+                        requestProperties.entrySet()) {
+                    System.out.println(" " + entry.getKey() + " : " + entry.getValue());
+                }
+
+                System.out.println();
+                System.out.println("============ Request body ============ ");
+                System.out.println(JSONObject.parseObject(json).toString(SerializerFeature.PrettyFormat));
+                System.out.println("======================================== ");
+                System.out.println(" ");
+                System.out.println(" ");
+
+                // 添加请求参数
+                if (!StringUtils.isEmpty(json)) {
+                    OutputStream outPutStream = connection.getOutputStream();
+                    outPutStream.write(json.getBytes(StandardCharsets.UTF_8));
+                    outPutStream.flush();
+                    outPutStream.close();
+                }
+                postHeader(callback, connection.getHeaderFields());
+                int responseCode = connection.getResponseCode();
+                if (responseCode == 200) {
+                    InputStream inputStream = connection.getInputStream();
+                    String result = inputStream2String(inputStream);
+                    if (result != null && callback != null) {
+
+                        System.out.println();
+                        System.out.println("============ Alipay Response body ============ ");
+                        System.out.println(JSONObject.parseObject(result).toString(SerializerFeature.PrettyFormat));
+                        System.out.println("======================================== ");
+
+                        postSuccessObject(callback, JSONObject.parseObject(result, cls));
+                    }
+                } else {
+                    if (callback != null) {
+                        postFailed(callback, responseCode, new Exception("请求数据失败：" + responseCode));
+                    }
+                }
+
+            } catch (final Exception e) {
+                e.printStackTrace();
+                if (callback != null) {
+                    postFailed(callback, 0, e);
+                }
+
+            } finally {
+                if (connection != null) {
+                    connection.disconnect();
+                }
+                if (outputStream != null) {
+                    try {
+                        outputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+        newThread.start();
+
+
+    }
+
 
     /**
      * 字节流转换成字符串
@@ -511,8 +616,6 @@ public class HttpUtil {
     private static void postSuccessByte(final Callback callback, final byte[] bytes) {
 
 
-
-
         ByteArrayCallback byteArrayCallback = (ByteArrayCallback) callback;
         byteArrayCallback.onSuccess(bytes);
 
@@ -536,7 +639,7 @@ public class HttpUtil {
         //support java 1.6
         for (Map.Entry<String, List<String>> entry :
                 headerFields.entrySet()) {
-            map.put(entry.getKey(),entry.getValue().toString());
+            map.put(entry.getKey(), entry.getValue().toString());
         }
         callback.onHeader(map);
     }

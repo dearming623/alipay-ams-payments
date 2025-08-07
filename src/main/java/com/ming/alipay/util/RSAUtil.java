@@ -245,7 +245,7 @@ public class RSAUtil {
     /**
      * 初始化密钥
      *
-     * @param byte[] seed 种子
+     * @param seed 种子
      * @return Map 密钥Map
      * @throws Exception
      */

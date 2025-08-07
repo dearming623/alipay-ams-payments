@@ -4,10 +4,10 @@ import com.alibaba.fastjson.annotation.JSONField;
 import com.ming.alipay.ams.entity.PSPCustomerInfo;
 import com.ming.alipay.ams.entity.Result;
 import com.ming.alipay.enums.ResultCode;
+import com.ming.alipay.util.StringUtils;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -52,13 +52,10 @@ public class AMSResponse {
 
     @JSONField(serialize = false)
     public boolean isSuccess() {
-        if (result == null)
+        if (result == null) {
             return false;
-
-        if (StringUtils.equals("S", result.getResultCode()))
-            return true;
-        else
-            return false;
+        }
+        return StringUtils.equals("S", result.getResultCode());
     }
 
     public AMSResponse noResponse() {

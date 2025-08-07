@@ -4,7 +4,6 @@ import com.ming.alipay.enums.ResultCode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Ming
@@ -22,6 +21,6 @@ public class Result {
     public Result(ResultCode resultCode) {
         this.resultCode = resultCode.getCode();
         this.resultMessage = resultCode.getMsg();
-        this.resultStatus = StringUtils.EMPTY;
+        this.resultStatus = "";
     }
 }
